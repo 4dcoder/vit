@@ -1,0 +1,32 @@
+# Core Deep Learning Frameworks
+torch>=1.10.0 # Specify a minimum version compatible with your setup (e.g., CUDA version)
+torchvision>=0.11.0
+torchaudio>=0.10.0 # Potentially optional if no audio data is used
+
+# Hugging Face Libraries (for Vision Transformers like DETR/DINO backbone)
+transformers>=4.0.0
+datasets>=2.0.0 # For loading/managing datasets, useful with HF models
+
+# Image Processing & Data Handling
+pillow>=9.0.0
+opencv-python>=4.5.0.0 # If you plan to use OpenCV for any image operations
+numpy>=1.20.0
+pandas>=1.3.0
+scikit-learn>=1.0.0 # Useful for metrics, data splitting, etc.
+
+# Plotting & Visualization
+matplotlib>=3.4.0
+seaborn>=0.11.0
+
+# Transformer-specific / Utilities
+timm>=0.5.4 # PyTorch Image Models - useful for various vision models, often a dependency for others
+requests # For downloading data (e.g., TACO annotations if done programmatically)
+pycocotools>=2.0.0 # Essential for COCO dataset metrics (like mAP for object detection)
+
+# Development & Notebooks
+jupyter
+
+# Graphviz for model visualization (e.g., with torch.jit.trace or similar)
+graphviz
+# Cython (often a dependency for some deep learning libraries, good to include if you hit build errors)
+Cython

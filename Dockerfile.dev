@@ -1,0 +1,89 @@
+# Use a specific CUDA version that aligns with your project needs and Orin Nano's JetPack.
+# For Orin Nano, you will eventually deploy with its specific JetPack, but for server-side
+# development/training, this base image is fine.
+# Note: Ubuntu 20.04 might be old for Python 3.10 and some latest ML libs.
+# Consider `ubuntu22.04` if your server supports it, otherwise 20.04 is okay.
+FROM nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu20.04
+
+# Set a non-root user for better security (optional but recommended for dev)
+ARG USER_NAME=dev_user
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+# Install system dependencies
+# - git, software-properties-common: for python PPA
+# - python3.10-venv, libpython3.10-dev: for Python 3.10 and venv support
+# - build-essential, gcc, g++, make: For compiling C/C++ extensions (like pycocotools, Cython)
+# - libgl1-mesa-glx, libegl1-mesa, libxrandr2, libxss1, libxcursor1, libxtst6, libnss3, libasound2:
+#   Common dependencies for running GUI apps or some Python libraries like matplotlib, OpenCV.
+#   Even if you run headless, some libraries might implicitly link against these.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git \
+        software-properties-common \
+        build-essential \
+        gcc \
+        g++ \
+        make \
+        libgl1-mesa-glx \
+        libegl1-mesa \
+        libxrandr2 \
+        libxss1 \
+        libxcursor1 \
+        libxtst6 \
+        libnss3 \
+        libasound2 \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install python3.10
+RUN add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3.10-venv \
+        libpython3.10-dev \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create virtual environment and add to PATH
+RUN python3.10 -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+
+# Ensures that Python output to stdout/stderr is not buffered: prevents missing information when terminating
+ENV PYTHONUNBUFFERED 1
+
+# Update pip
+RUN pip install pip --upgrade
+
+# Create the working directory
+WORKDIR /usr/src/app
+
+# Copy the requirements file first to leverage Docker's build cache
+# If requirements.txt doesn't change, this layer is cached.
+COPY requirements.txt .
+
+# Install Python dependencies from requirements.txt
+# --no-cache-dir saves space
+# You might need to specify extra-index-url for PyTorch if your standard pip install fails
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of your project code
+# This should be the last COPY step if you want to leverage caching for requirements installation
+COPY . .
+
+# Create the non-root user and set permissions (optional but good practice)
+RUN groupadd --gid $USER_GID $USER_NAME || true && \
+    useradd --uid $USER_UID --gid $USER_GID --shell /bin/bash -m $USER_NAME && \
+    chown -R $USER_NAME:$USER_NAME /usr/src/app
+
+USER $USER_NAME
+
+# Default command when the container starts.
+# Keeps the container running so you can exec into it.
+ENTRYPOINT ["tail", "-f", "/dev/null"]
+
+# If you want to run Jupyter Lab directly on container startup, use this:
+# CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--no-browser"]
+# Remember to expose port 8888 with -p 8888:8888 when running `docker run`
+# Also, remove USER $USER_NAME if you want to run jupyter as root for `--allow-root`
+# or configure jupyter to run as non-root.

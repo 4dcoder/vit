@@ -1,0 +1,59 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://devcontainers.com/templates/docker-existing-dockerfile
+{
+    "name": "AI Robotics Research Dev Container",
+    "build": {
+        "context": "..",
+        "dockerfile": "../Dockerfile.dev"
+    },
+    // Essential for GPU access
+    "runArgs": ["--gpus=all"],
+
+    // Mount volumes for persistence of large datasets and models
+    // This is crucial to avoid re-downloading/re-training on container rebuilds.
+    "mounts": [
+        // Ensure your host paths exist before mounting (e.g., project_root/datasets/TACO)
+        "source=${localWorkspaceFolder}/datasets/TACO,target=/usr/src/app/datasets/TACO,type=bind",
+        "source=${localWorkspaceFolder}/datasets/trash_ICRA19,target=/usr/src/app/datasets/trash_ICRA19,type=bind",
+        "source=${localWorkspaceFolder}/models,target=/usr/src/app/models,type=bind",
+        "source=${localWorkspaceFolder}/data_output,target=/usr/src/app/data_output,type=bind" // Example for any generated data/logs
+    ],
+
+    // Set environment variables within the container
+    "remoteEnv": {
+        // Essential CUDA paths for dynamic linking and binaries
+        "PATH": "${containerEnv:PATH}:/usr/local/cuda/bin",
+        "LD_LIBRARY_PATH": "${containerEnv:LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64"
+        // "XLA_FLAGS": "--xla_gpu_cuda_data_dir=/usr/local/cuda" // Not needed for PyTorch
+    },
+
+    // Configure tool-specific properties for VS Code.
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-toolsai.jupyter",
+                "ms-toolsai.vscode-jupyter-cell-tags",
+                "ms-toolsai.jupyter-keymap",
+                "ms-toolsai.jupyter-renderers",
+                "ms-toolsai.vscode-jupyter-slideshow",
+                "ms-python.vscode-pylance"
+            ],
+            "settings": {
+                // Optional: Explicitly set the Python interpreter path for VS Code
+                "python.pythonPath": "/venv/bin/python",
+                "python.defaultInterpreterPath": "/venv/bin/python",
+                // Ensure flake8, black, etc. are used from venv
+                "python.linting.flake8Enabled": true,
+                "python.formatting.blackEnabled": true
+            }
+        }
+    },
+
+    // Optional: Command to run after the container is created.
+    // Useful for initial setup like registering the venv as a Jupyter kernel.
+    // "postCreateCommand": "python -m ipykernel install --user --name=venv --display-name \"Python 3.10 (venv)\"",
+
+    // Optional: Forward ports if you run services inside the container (e.g., Jupyter Lab)
+    // "forwardPorts": [8888]
+}

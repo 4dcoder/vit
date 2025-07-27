@@ -1,0 +1,76 @@
+# Python specific
+__pycache__/
+*.pyc
+*.pyd
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+dist/
+build/
+pip-wheel-metadata/
+.tox/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+
+# Jupyter Notebook specific
+.ipynb_checkpoints/
+
+# Machine Learning / Data specific (heavy files)
+# Datasets - these are typically large and should not be version controlled.
+# They will be downloaded or bind-mounted separately.
+/datasets/TACO/
+/datasets/trash_ICRA19/
+
+
+# Trained Models and Checkpoints
+# While you'll save these on your host (via bind mounts),
+# you generally don't want to commit the binary model files to Git.
+# Only commit small configuration files or model definitions.
+/models/checkpoints/
+/models/exported_onnx/
+/models/tensorrt_engines/
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+
+# Logs and Experiment Tracking
+logs/
+*.log
+wandb/
+runs/ # Common for TensorBoard or other experiment tracking tools
+results/ # Directory for evaluation results, images, etc.
+data_output/ # Any other generated output data
+
+# IDE specific files
+.vscode/
+# Keep .devcontainer/devcontainer.json and Dockerfile.dev for dev container setup
+# but ignore other VS Code specific files if they appear:
+.vscode/*.log
+.vscode/*.backup
+.vscode/*.code-workspace
+.vscode/.history/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE temporary files
+*~
+#*#
+.idea/ # IntelliJ/PyCharm project files
+.project
+.settings/
+.classpath
+
+# Docker specific (if you have local Docker volumes or build artifacts not in working dir)
+# Generally, the Dockerfile itself and .devcontainer are committed.
+# But if you have build context specific files that shouldn't be committed:
+# .dockerignore # (This file itself should be committed)
