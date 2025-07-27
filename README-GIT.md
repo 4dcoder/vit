@@ -1,11 +1,8 @@
 # vit
 
-
-
 ```
 $ssh-keygen -t rsa -b 4096 -C "getsnigeria@gmail.com"
 ```
-
 
 Assuming you are connecting GitHub over SSH, you can run below command to confirm this.
 
@@ -45,3 +42,9 @@ You'll be asked to confirm where to save the SSH key and what passphrase you wan
 Then add the copied key to GitHub
 
 Go to  **Settings** -> **SSH keys** (Personal settings side bar)-> **Add SSH key** ->fill out form(key is on your clipboard, just use ctrl+v)->**Add key**
+
+
+
+```
+
+```

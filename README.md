@@ -263,7 +263,6 @@
 
 This action plan provides a strong roadmap. The next step is to start writing the actual code, beginning with the data preparation phase. We'll start with the `01_data_acquisition_and_exploration.ipynb` and `02_data_preprocessing_and_dataset.ipynb` notebooks and their associated utility files.
 
-
 **Run Jupyter Notebooks:**
 
 * Open a terminal in your `project_root/`.
@@ -272,5 +271,20 @@ This action plan provides a strong roadmap. The next step is to start writing th
 * **First, run `01_data_acquisition_and_exploration.ipynb`:** This notebook will guide you through the dataset acquisition (which is mostly manual steps) and provide initial statistics and visualizations. **Pay close attention to the `TACO_TO_ICRA19_CLASS_MAP` in `utils/dataset_parsers.py` and refine it based on the actual TACO categories you see. This is a crucial step for effective transfer learning.**
 * **Then, run `02_data_preprocessing_and_dataset.ipynb`:** This notebook will demonstrate how your `TrashDetectionDataset` and `DataLoader` work, confirming that images and annotations are loaded and transformed correctly.
 
->
 > To run a dev container select ctrl + shift + p -> *Dev Containers: Reopen in Container* and enjoy developing in a well-known VSCode.
+
+
+
+OR
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+pip install --upgrade pip
+
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+pip install -r requirements.txt
+
+python -c "import torch; print(f'PyTorch version: {torch.__version__}'); print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA version: {torch.version.cuda}'); print(f'cuDNN version: {torch.backends.cudnn.version()}')"
